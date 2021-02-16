@@ -1,0 +1,74 @@
+<html>
+<head>
+    <title>Notebook</title>
+    <!-- Icons & Stylesheets -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<!-- Include the library in the page -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/marked"></script>
+<script src="https://unpkg.com/moment"></script>
+
+<!-- Notebook app -->
+<div id="notebook">
+    <!-- Sidebar -->
+    <aside class="side-bar">
+        <!-- Here will be the note list -->
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <!-- Add note button -->
+            <button
+                    v-on:click="addNote"
+                    v-bind:title="addButtonTitle"
+            ><i class="material-icons">add</i> Add note
+            </button>
+        </div>
+        <div class="notes">
+            <div class="note"
+                 v-for="note in sortedNotes"
+                 v-on:click="selectNote(note)"
+                 v-bind:class="{selected: note===selectedNote}"
+            >
+                <i class="icon material-icons" v-if="note.is_favorite">star</i>
+                {{ note.title }}
+            </div>
+        </div>
+    </aside>
+    <template v-if="selectedNote">
+        <!-- Main pane -->
+        <section class="main">
+            <div class="toolbar">
+                <input v-model="selectedNote.title" placeholder="Note title" />
+                <button
+                        v-on:click="favoriteNote" title="Favorite note"><i
+                        class="material-icons">
+                    {{ selectedNote.is_favorite ? 'star' : 'star_border' }}</i>
+                </button>
+                <button
+                        v-on:click="removeNote"
+                        title="Remove note"><i
+                        class="material-icons">delete</i>
+                </button>
+            </div>
+            <textarea v-model="selectedNote.content"></textarea>
+
+            <div class="toolbar status-bar">
+                <span class="date">
+                    <span class="label">Created at</span>
+                    <span class="value">{{ selectedNote.created_at | date }}</span>
+                </span>
+            </div>
+        </section>
+
+        <!-- Preview pane -->
+        <aside class="preview" v-html="notePreview">
+        </aside>
+    </template>
+</div>
+
+<!-- Some JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
